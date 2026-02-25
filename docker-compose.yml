@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  monitor:
+    build: .
+    container_name: base-usdc-monitor
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - monitor-network
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "python", "scripts/test_rpc.py"]
+      interval: 5m
+      timeout: 30s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: base-usdc-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - monitor-network
+    command: redis-server --appendonly yes
+
+networks:
+  monitor-network:
+    driver: bridge
+
+volumes:
+  redis-data:

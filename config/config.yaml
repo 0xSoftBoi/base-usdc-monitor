@@ -1,0 +1,145 @@
+# Base USDC Monitor Configuration
+
+network:
+  name: "Base"
+  chain_id: 8453
+  rpc_primary: "https://mainnet.base.org"
+  rpc_backup: "https://base.llamarpc.com"
+  block_time: 2  # seconds
+
+usdc:
+  contract_address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  decimals: 6
+  symbol: "USDC"
+
+monitoring:
+  enabled: true
+  poll_interval: 12  # seconds
+  block_confirmation: 2
+  max_retries: 3
+  
+  # Addresses to monitor (empty list = monitor all)
+  watch_addresses:
+    - "0xYourWalletAddress1"
+    - "0xYourWalletAddress2"
+  
+  # Transaction filters
+  filters:
+    min_amount: 1
+    max_amount: 1000000
+    target_amounts:
+      - 100
+      - 1000
+      - 10000
+    
+    # Track incoming and/or outgoing
+    track_incoming: true
+    track_outgoing: true
+
+pattern_detection:
+  enabled: true
+  window_size: 100
+  anomaly_threshold: 0.85
+  
+  algorithms:
+    - name: "isolation_forest"
+      enabled: true
+      contamination: 0.1
+    
+    - name: "statistical_threshold"
+      enabled: true
+      z_score_threshold: 3
+    
+    - name: "frequency_analysis"
+      enabled: true
+      spike_threshold: 5  # transactions per hour
+    
+    - name: "amount_clustering"
+      enabled: true
+      exact_match_threshold: 5
+  
+  training:
+    auto_train: true
+    min_samples: 100
+    retrain_interval: 86400  # seconds (24 hours)
+
+alerts:
+  telegram:
+    enabled: true
+    severity_levels:
+      - low
+      - medium
+      - high
+      - critical
+  
+  email:
+    enabled: true
+    batch_enabled: false
+    batch_interval: 300  # seconds
+  
+  discord:
+    enabled: false
+  
+  webhook:
+    enabled: false
+    retry_count: 3
+    timeout: 10
+  
+  # Alert rules
+  rules:
+    - name: "100_usdc_transfer"
+      condition: "amount == 100"
+      severity: "high"
+      channels: ["telegram", "email"]
+    
+    - name: "large_transfer"
+      condition: "amount > 10000"
+      severity: "high"
+      channels: ["telegram", "email"]
+    
+    - name: "pattern_anomaly"
+      condition: "pattern_score > 0.85"
+      severity: "medium"
+      channels: ["telegram"]
+    
+    - name: "high_frequency"
+      condition: "frequency > 5"
+      severity: "medium"
+      channels: ["telegram"]
+
+database:
+  batch_insert: true
+  batch_size: 100
+  flush_interval: 60  # seconds
+  
+  retention:
+    transactions: 365  # days
+    alerts: 90  # days
+
+api:
+  basescan:
+    rate_limit: 5  # requests per second
+    timeout: 30
+    retry_count: 3
+  
+  bitquery:
+    rate_limit: 10
+    timeout: 30
+    retry_count: 3
+
+performance:
+  worker_threads: 4
+  queue_size: 1000
+  cache_enabled: true
+  cache_ttl: 300  # seconds
+  
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/monitor.log"
+  max_size: 10485760  # 10 MB
+  backup_count: 5
+  
+  # Log specific events
+  log_all_transfers: false
+  log_flagged_only: true

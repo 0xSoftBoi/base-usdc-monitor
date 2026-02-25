@@ -1,0 +1,41 @@
+{
+  "base_mainnet": {
+    "usdc": {
+      "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "decimals": 6,
+      "symbol": "USDC",
+      "name": "USD Coin"
+    },
+    "usdt": {
+      "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+      "decimals": 6,
+      "symbol": "USDT",
+      "name": "Tether USD"
+    },
+    "dai": {
+      "address": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+      "decimals": 18,
+      "symbol": "DAI",
+      "name": "Dai Stablecoin"
+    },
+    "weth": {
+      "address": "0x4200000000000000000000000000000000000006",
+      "decimals": 18,
+      "symbol": "WETH",
+      "name": "Wrapped Ether"
+    }
+  },
+  "base_testnet": {
+    "usdc": {
+      "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      "decimals": 6,
+      "symbol": "USDC",
+      "name": "USD Coin"
+    }
+  },
+  "common_dex": {
+    "uniswap_v3_router": "0x2626664c2603336E57B271c5C0b26F421741e481",
+    "uniswap_v3_factory": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+    "uniswap_v2_router": "0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24"
+  }
+}
